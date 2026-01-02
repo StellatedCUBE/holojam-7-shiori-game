@@ -1,0 +1,11 @@
+[package]
+name = "hj7"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+bitflags = "2.10.0"
+godot = "0.2.4"
