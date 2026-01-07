@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhlqs85kqg2d4"]
+
+[ext_resource type="SpriteFrames" uid="uid://bb4jcfo1edorc" path="res://sprite_aseprite_output/shiorinovella2.res" id="1_15tap"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ru62r"]
+size = Vector2(2, 3)
+
+[node name="Player" type="Actor"]
+is_static = false
+terminal_velocity = 50000
+
+[node name="Player" type="Player" parent="."]
+speed = 10000
+jump_power = 30000
+jump_gravity_cutoff = 5000
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_ru62r")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.0625, 0.0625)
+sprite_frames = ExtResource("1_15tap")
+animation = &"Idle"

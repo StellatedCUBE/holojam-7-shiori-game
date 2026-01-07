@@ -25,6 +25,7 @@ texture = ExtResource("3_uxeig")
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_imjip"]
 texture = ExtResource("4_0lrtv")
 0:0/0 = 0
+0:0/0/custom_data_0 = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mern1"]
 texture = ExtResource("5_y1yfy")
@@ -47,6 +48,8 @@ texture = ExtResource("9_j746q")
 0:0/0 = 0
 
 [resource]
+custom_data_layer_0/name = "Solid"
+custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_6lm1h")
 sources/1 = SubResource("TileSetAtlasSource_gch8p")
 sources/2 = SubResource("TileSetAtlasSource_fkkgy")

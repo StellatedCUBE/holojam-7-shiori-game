@@ -27,9 +27,9 @@ impl INode for Player {
 			base,
 			actor: Default::default(),
 			speed: 16000,
-			jump_power: 20000,
-			jump_gravity: 800,
-			jump_gravity_cutoff: 0,
+			jump_power: 50000,
+			jump_gravity: 1500,
+			jump_gravity_cutoff: 10000,
 		}
 	}
 
@@ -57,6 +57,8 @@ impl INode for Player {
 			data.vel.y -= self.jump_power;
 			data.gravity = self.jump_gravity;
 		}
+
+		//godot_print!("{}", Into::<Vector2>::into(data.pos));
 
 		self.actor.set(data);
 	}

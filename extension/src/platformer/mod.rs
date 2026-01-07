@@ -1,9 +1,10 @@
 use std::{cell::Cell, rc::Rc};
 
 use actor::{Actor, ActorData, Directions};
-use godot::prelude::*;
+use godot::{classes::TileMapLayer, prelude::*};
 
 mod actor;
+mod camera;
 
 #[derive(GodotClass)]
 #[class(base=Node2D)]
@@ -11,6 +12,9 @@ struct PlatformerGame {
 	base: Base<Node2D>,
 	actors: Vec<Rc<Cell<ActorData>>>,
 	actors_that_move: Vec<Rc<Cell<ActorData>>>,
+
+	#[export]
+	tilemap: Option<Gd<TileMapLayer>>,
 }
 
 #[godot_api]
@@ -20,6 +24,7 @@ impl INode2D for PlatformerGame {
 			base,
 			actors: vec![],
 			actors_that_move: vec![],
+			tilemap: None,
 		}
 	}
 
@@ -28,9 +33,59 @@ impl INode2D for PlatformerGame {
 	}
 
 	fn physics_process(&mut self, _: f64) {
+		let tm = self.tilemap.as_ref().unwrap();
+
 		for actor in &self.actors_that_move {
 			let mut data = actor.get();
 			data.collided = Directions::empty();
+
+			if data.vel.x > 0 {
+				let br = data.pos + data.area_offset + data.area_size;
+				let tr = br + actor::Vec {
+					y: -data.area_size.y,
+					x: -1
+				};
+				let mbr = br + data.vel;
+
+				let tr = self.tile_pos(tr);
+				let b = self.tile_pos(br + actor::Vec {x: 0, y: -1} ).y;
+				let mr = self.tile_pos(mbr).x;
+
+				'o: for x in (tr.x + 1)..=mr {
+					for y in tr.y..=b {
+						if let Some(tiledata) = tm.get_cell_tile_data(Vector2i { x, y }) {
+							if tiledata.get_custom_data("Solid").booleanize() {
+								data.vel.x = self.un_tile_pos(x) - (data.pos.x + data.area_offset.x + data.area_size.x);
+								data.collided |= Directions::RIGHT;
+								break 'o;
+							}
+						}
+					}
+				}
+			} else if data.vel.x < 0 {
+				let tl = data.pos + data.area_offset;
+				let bl = tl + actor::Vec {
+					y: data.area_size.y - 1,
+					x: 1
+				};
+				let mtl = tl + data.vel;
+
+				let bl = self.tile_pos(bl);
+				let t = self.tile_pos(tl).y;
+				let ml = self.tile_pos(mtl).x;
+
+				for x in ml..bl.x {
+					for y in t..=bl.y {
+						if let Some(tiledata) = tm.get_cell_tile_data(Vector2i { x, y }) {
+							if tiledata.get_custom_data("Solid").booleanize() {
+								data.vel.x = self.un_tile_pos(x + 1) - (data.pos.x + data.area_offset.x);
+								data.collided |= Directions::LEFT;
+								break;
+							}
+						}
+					}
+				}
+			}
 
 			for actor2 in &self.actors {
 				let data2 = actor2.get();
@@ -67,6 +122,55 @@ impl INode2D for PlatformerGame {
 
 		for actor in &self.actors_that_move {
 			let mut data = actor.get();
+
+			if data.vel.y > 0 {
+				let br = data.pos + data.area_offset + data.area_size;
+				let bl = br + actor::Vec {
+					x: -data.area_size.x,
+					y: -1
+				};
+				let mbr = br + data.vel;
+
+				let bl = self.tile_pos(bl);
+				let r = self.tile_pos(br + actor::Vec { x: -1, y: 0 }).x;
+				let mb = self.tile_pos(mbr).y;
+
+				'o: for y in (bl.y + 1)..=mb {
+					for x in bl.x..=r {
+						if let Some(tiledata) = tm.get_cell_tile_data(Vector2i { x, y }) {
+							if tiledata.get_custom_data("Solid").booleanize() {
+								data.vel.y = self.un_tile_pos(y) - (data.pos.y + data.area_offset.y + data.area_size.y);
+								data.collided |= Directions::DOWN;
+								break 'o;
+							}
+						}
+					}
+				}
+			} else if data.vel.y < 0 {
+				let tl = data.pos + data.area_offset;
+				let tr = tl + actor::Vec {
+					x: data.area_size.x - 1,
+					y: 1
+				};
+				let mtl = tl + data.vel;
+
+				let tr = self.tile_pos(tr);
+				let l = self.tile_pos(tl).x;
+				let mt = self.tile_pos(mtl).y;
+
+				for y in mt..tr.y {
+					for x in l..=tr.x {
+						if let Some(tiledata) = tm.get_cell_tile_data(Vector2i { x, y }) {
+							if tiledata.get_custom_data("Solid").booleanize() {
+								data.vel.y = self.un_tile_pos(y + 1) - (data.pos.y + data.area_offset.y);
+								data.collided |= Directions::UP;
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			for actor2 in &self.actors {
 				let data2 = actor2.get();
 				let rmov = data.vel.y - data2.vel.y;
@@ -100,6 +204,8 @@ impl INode2D for PlatformerGame {
 	}
 }
 
+const TILEMAP_SCALE_LOG2 : u32 = 16;
+
 impl PlatformerGame {
 	fn register_actors(&mut self, from: Gd<Node>) {
 		match from.clone().try_cast::<Actor>() {
@@ -114,5 +220,16 @@ impl PlatformerGame {
 				self.register_actors(child);
 			}
 		}
+	}
+
+	fn tile_pos(&self, v: actor::Vec) -> actor::Vec {
+		actor::Vec {
+			x: v.x >> TILEMAP_SCALE_LOG2,
+			y: v.y >> TILEMAP_SCALE_LOG2,
+		}
+	}
+
+	fn un_tile_pos(&self, v: i32) -> i32 {
+		v << TILEMAP_SCALE_LOG2
 	}
 }

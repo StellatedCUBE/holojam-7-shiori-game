@@ -8,7 +8,7 @@ mod player;
 const SCENE_SCALE: f32 = 65536.0;
 const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
 
-const GRAVITY: i32 = 5000;
+const GRAVITY: i32 = 3000;
 
 bitflags! {
 	#[derive(Default, Clone, Copy, PartialEq, Eq)]
@@ -65,6 +65,15 @@ impl Add for Vec {
 		Self {
 			x: self.x + rhs.x,
 			y: self.y + rhs.y,
+		}
+	}
+}
+
+impl Vec {
+	pub const fn half(self) -> Self {
+		Self {
+			x: self.x >> 1,
+			y: self.y >> 1,
 		}
 	}
 }
