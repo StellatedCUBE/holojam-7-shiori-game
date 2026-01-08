@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=19 format=3 uid="uid://b1lbp2o3vesvq"]
+[gd_resource type="TileSet" load_steps=20 format=3 uid="uid://b1lbp2o3vesvq"]
 
 [ext_resource type="Texture2D" uid="uid://bbqawp2b2vhqm" path="res://sprite_aseprite_output/terrain_platform_horizontal_bottom_center.png" id="1_0n025"]
 [ext_resource type="Texture2D" uid="uid://d3qoll6ldkm68" path="res://sprite_aseprite_output/terrain_platform_horizontal_bottom_left.png" id="2_55c12"]
@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://bc2xl664idwmt" path="res://sprite_aseprite_output/terrain_platform_horizontal_top_center.png" id="7_gosub"]
 [ext_resource type="Texture2D" uid="uid://c87xwjei0jo47" path="res://sprite_aseprite_output/terrain_platform_horizontal_top_left.png" id="8_7gh5m"]
 [ext_resource type="Texture2D" uid="uid://dkwndaf26eo1a" path="res://sprite_aseprite_output/terrain_platform_horizontal_top_right.png" id="9_j746q"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0n025"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6lm1h"]
 texture = ExtResource("1_0n025")
@@ -48,6 +50,8 @@ texture = ExtResource("9_j746q")
 0:0/0 = 0
 
 [resource]
+physics_layer_0/collision_layer = 1
+physics_layer_0/physics_material = SubResource("PhysicsMaterial_0n025")
 custom_data_layer_0/name = "Solid"
 custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_6lm1h")
