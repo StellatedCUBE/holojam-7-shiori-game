@@ -5,6 +5,7 @@ use bitflags::bitflags;
 
 mod player;
 mod cube;
+mod plate;
 
 const SCENE_SCALE: f32 = 65536.0;
 const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
@@ -97,6 +98,7 @@ pub struct ActorData {
 	pub collided_old: Directions,
 	pub actor: Option<InstanceId>,
 	pub notify_target: Option<InstanceId>,
+	pub signal: bool,
 	gravity: i32,
 	terminal_velocity: i32,
 	pub top: SurfaceProperties,

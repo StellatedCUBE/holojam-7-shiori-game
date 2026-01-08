@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://dyfsdykt1o73k"]
+
+[ext_resource type="SpriteFrames" path="res://sprite_aseprite_output/Box_Switch.res" id="1_iapft"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iapft"]
+size = Vector2(1, 0.25)
+
+[node name="Plate" type="Actor"]
+top_notify = true
+left_notify = true
+right_notify = true
+z_index = -1
+
+[node name="Plate" type="Plate" parent="." node_paths=PackedStringArray("sprite")]
+sprite = NodePath("../AnimatedSprite2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -0.125)
+shape = SubResource("RectangleShape2D_iapft")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.5, -0.25)
+scale = Vector2(0.0625, 0.0625)
+sprite_frames = ExtResource("1_iapft")
+animation = &"NotPressed"
