@@ -6,6 +6,7 @@ use bitflags::bitflags;
 mod player;
 mod cube;
 mod plate;
+mod door;
 
 const SCENE_SCALE: f32 = 65536.0;
 const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
@@ -102,9 +103,9 @@ pub struct ActorData {
 	gravity: i32,
 	terminal_velocity: i32,
 	pub top: SurfaceProperties,
-	left: SurfaceProperties,
-	bottom: SurfaceProperties,
-	right: SurfaceProperties,
+	pub left: SurfaceProperties,
+	pub bottom: SurfaceProperties,
+	pub right: SurfaceProperties,
 }
 
 #[derive(GodotClass)]

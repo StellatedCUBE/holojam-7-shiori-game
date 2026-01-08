@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccan1co84mr63"]
+
+[ext_resource type="SpriteFrames" uid="uid://copvqooctlnk6" path="res://sprite_aseprite_output/gate.res" id="1_2v1t4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2v1t4"]
+size = Vector2(1, 4)
+
+[node name="Door" type="Door"]
+
+[node name="Actor" type="Actor" parent="."]
+top_solid = true
+bottom_solid = true
+left_solid = true
+right_solid = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actor"]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_2v1t4")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.5, 0)
+scale = Vector2(0.0625, 0.0625)
+sprite_frames = ExtResource("1_2v1t4")
+animation = &"Gate_Up"
+speed_scale = 0.0
