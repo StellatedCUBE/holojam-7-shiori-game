@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfi3ufvcvkl6d"]
+
+[ext_resource type="Texture2D" uid="uid://cdx8o1rgf74jh" path="res://sprite_aseprite_output/box_justice_64.png" id="1_dea4x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w0sav"]
+size = Vector2(4, 4)
+
+[node name="LargeCrate" type="Actor"]
+is_static = false
+terminal_velocity = 70000
+top_solid = true
+bottom_solid = true
+left_solid = true
+left_notify = true
+right_solid = true
+right_notify = true
+
+[node name="Crate" type="Crate" parent="."]
+push_speed = 3000
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_w0sav")
+
+[node name="BoxJustice64" type="Sprite2D" parent="."]
+scale = Vector2(0.0625, 0.0625)
+texture = ExtResource("1_dea4x")

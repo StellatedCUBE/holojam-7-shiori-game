@@ -43,9 +43,10 @@ impl ICamera2D for ScreenCamera {
 			x: screen.x * screen_size.x,
 			y: screen.y * screen_size.y
 		} + screen_size.half();
-		let center = center.into();
+		let center: Vector2 = center.into();
 		let position = self.base().get_position();
-		self.base_mut().set_position(position.lerp(center, 0.1));
+		let speed = if center.distance_squared_to(position) < 0.0002 || self.base().get_zoom().x == 1000.0 { 1.0 } else { 0.1 };
+		self.base_mut().set_position(position.lerp(center, speed));
 
 		let target_resolution = DisplayServer::singleton().window_get_size().y as f32;
 		let zoom = target_resolution / self.screen_size.y as f32;

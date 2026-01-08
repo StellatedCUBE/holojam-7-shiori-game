@@ -4,6 +4,7 @@ use godot::{classes::{CollisionShape2D, RectangleShape2D}, prelude::*};
 use bitflags::bitflags;
 
 mod player;
+mod cube;
 
 const SCENE_SCALE: f32 = 65536.0;
 const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
@@ -89,12 +90,16 @@ pub struct ActorData {
 	pub moves: bool,
 	pub pos: Vec,
 	pub vel: Vec,
+	pub next_vel: i32,
 	pub area_offset: Vec,
 	pub area_size: Vec,
 	pub collided: Directions,
+	pub collided_old: Directions,
+	pub actor: Option<InstanceId>,
+	pub notify_target: Option<InstanceId>,
 	gravity: i32,
 	terminal_velocity: i32,
-	top: SurfaceProperties,
+	pub top: SurfaceProperties,
 	left: SurfaceProperties,
 	bottom: SurfaceProperties,
 	right: SurfaceProperties,
@@ -149,10 +154,11 @@ impl INode2D for Actor {
 	}
 
 	fn ready(&mut self) {
-		let mut data = ActorData::default();
+		let mut data = self.data.get();
 
 		data.moves = !self.is_static;
 		data.pos = self.base().get_global_position().into();
+		data.actor = Some(self.base().instance_id());
 		if self.top_solid { data.top |= SurfaceProperties::SOLID; }
 		if self.top_notify { data.top |= SurfaceProperties::NOTIFY; }
 		if self.left_solid { data.left |= SurfaceProperties::SOLID; }
