@@ -1,10 +1,12 @@
-use std::{cell::Cell, rc::Rc};
+use std::{cell::{Cell, RefCell}, i32, rc::Rc};
 
-use actor::{Actor, ActorData, Directions, SurfaceProperties};
+use actor::{Actor, ActorData, Directions, SurfaceProperties, SCENE_SCALE_INV};
 use godot::{classes::TileMapLayer, prelude::*};
+use lazer::{Beam, Direction, Lazer, SegmentData};
 
 mod actor;
 mod camera;
+mod lazer;
 
 #[derive(GodotClass)]
 #[class(base=Node2D)]
@@ -12,9 +14,12 @@ struct PlatformerGame {
 	base: Base<Node2D>,
 	actors: Vec<Rc<Cell<ActorData>>>,
 	actors_that_move: Vec<Rc<Cell<ActorData>>>,
+	beams: Vec<Rc<RefCell<Beam>>>,
 
 	#[export]
 	tilemap: Option<Gd<TileMapLayer>>,
+	#[export]
+	beam_container: Option<Gd<Node>>,
 }
 
 #[godot_api]
@@ -24,7 +29,9 @@ impl INode2D for PlatformerGame {
 			base,
 			actors: vec![],
 			actors_that_move: vec![],
+			beams: vec![],
 			tilemap: None,
+			beam_container: None,
 		}
 	}
 
@@ -282,6 +289,126 @@ impl INode2D for PlatformerGame {
 			data.pos.y += data.vel.y;
 			actor.set(data);
 		}
+
+		for beam in &self.beams {
+			let mut beam = beam.borrow_mut();
+			if beam.active == beam.segments.is_empty() || (beam.active && self.actors_that_move.iter().any(|actor| {
+				let data = actor.get();
+				(data.vel.x != 0 || data.vel.y != 0) && {
+					let pmin = data.pos + actor::Vec {
+						x: data.vel.x.min(0) - data.vel.x,
+						y: data.vel.y.min(0) - data.vel.y
+					};
+					let pmax = data.pos + actor::Vec {
+						x: data.vel.x.max(0) - data.vel.x,
+						y: data.vel.y.max(0) - data.vel.y
+					};
+					let tl = pmin + data.area_offset;
+					let br = pmax + data.area_offset + data.area_size;
+					br.x >= beam.left && br.y >= beam.top && tl.x <= beam.right && tl.y <= beam.bottom
+				}
+			})) {
+				if let Some(actor) = beam.hit_actor.take() {
+					let mut data = actor.get();
+					data.beams -= 1;
+					actor.set(data);
+				}
+
+				if beam.active {
+					let mut hit: Option<Rc<Cell<ActorData>>> = None;
+					let mut segment = SegmentData {
+						start: beam.start_pos,
+						direction: beam.start_direction,
+						length: i32::MAX,
+						end: false,
+					};
+					let mut segments = vec![];
+
+					while !segment.end {
+						match segment.direction {
+							Direction::Left => for actor in &self.actors {
+								let edge = actor.get().right_edge();
+								if edge.properties.opaque() && edge.pos.x < segment.start.x && edge.pos.y < segment.start.y && edge.pos.y + edge.length > segment.start.y && segment.start.x - edge.pos.x < segment.length {
+									segment.length = segment.start.x - edge.pos.x;
+									hit = Some(Rc::clone(actor));
+								}
+							}
+							Direction::Right => for actor in &self.actors {
+								let edge = actor.get().left_edge();
+								if edge.properties.opaque() && edge.pos.x > segment.start.x && edge.pos.y < segment.start.y && edge.pos.y + edge.length > segment.start.y && edge.pos.x - segment.start.x < segment.length {
+									segment.length = edge.pos.x - segment.start.x;
+									hit = Some(Rc::clone(actor));
+								}
+							}
+							Direction::Up => for actor in &self.actors {
+								let edge = actor.get().bottom_edge();
+								if edge.properties.opaque() && edge.pos.y < segment.start.y && edge.pos.x < segment.start.x && edge.pos.x + edge.length > segment.start.x && segment.start.y - edge.pos.y < segment.length {
+									segment.length = segment.start.y - edge.pos.y;
+									hit = Some(Rc::clone(actor));
+								}
+							}
+							Direction::Down => for actor in &self.actors {
+								let edge = actor.get().top_edge();
+								if edge.properties.opaque() && edge.pos.y > segment.start.y && edge.pos.x < segment.start.x && edge.pos.x + edge.length > segment.start.x && edge.pos.y - segment.start.y < segment.length {
+									segment.length = edge.pos.y - segment.start.y;
+									hit = Some(Rc::clone(actor));
+								}
+							}
+						}
+
+						segment.end = true;
+
+						segments.push(segment);
+					}
+
+					if let Some(hit) = hit {
+						let mut data = hit.get();
+						data.beams += 1;
+						hit.set(data);
+						beam.hit_actor = Some(hit);
+					}
+
+					if segments.len() < beam.segments.len() {
+						for mut segment in beam.segments.drain(segments.len()..) {
+							segment.queue_free();
+						}	
+					} else {
+						for _ in beam.segments.len()..segments.len() {
+							let segment = beam.scene.instantiate().unwrap().try_cast().unwrap();
+							self.beam_container.as_mut().unwrap().add_child(&segment);
+							beam.segments.push(segment);
+						}
+					}
+
+					let mut top = beam.start_pos.y;
+					let mut bottom = beam.start_pos.y;
+					let mut left = beam.start_pos.x;
+					let mut right = beam.start_pos.x;
+
+					for (segment, node) in segments.into_iter().zip(beam.segments.iter_mut()) {
+						node.set_position(segment.start.into());
+						node.set_scale(Vector2 { x: segment.length as f32 * SCENE_SCALE_INV, y: 1.0 });
+						node.set_rotation(segment.direction.rot());
+
+						match segment.direction {
+							Direction::Down => bottom = bottom.max(segment.start.y + segment.length),
+							Direction::Left => left = left.min(segment.start.x - segment.length),
+							Direction::Right => right = right.max(segment.start.x + segment.length),
+							Direction::Up => top = top.min(segment.start.y - segment.length),
+						}
+					}
+
+					beam.top = top - 1;
+					beam.bottom = bottom + 1;
+					beam.left = left - 1;
+					beam.right = right + 1;
+				} else {
+					for mut segment in beam.segments.drain(..) {
+						segment.queue_free();
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -297,8 +424,13 @@ impl PlatformerGame {
 				}
 				self.actors.push(actor);
 			}
-			Err(_) => for child in from.get_children().iter_shared() {
-				self.register_actors(child);
+			Err(_) => match from.clone().try_cast::<Lazer>() {
+				Ok(lazer) => {
+					self.beams.push(Rc::clone(lazer.bind().beam.as_ref().unwrap()));
+				}
+				Err(_) => for child in from.get_children().iter_shared() {
+					self.register_actors(child);
+				}
 			}
 		}
 	}

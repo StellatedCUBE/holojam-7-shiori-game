@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://coyd58dwk8q6l"]
+
+[ext_resource type="Texture2D" uid="uid://bk8eh6rk38qlh" path="res://sprite_aseprite_output/box_justice_32.png" id="1_kmx18"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8sc8"]
+size = Vector2(1.2, 1.2)
+
+[node name="LazerDetector" type="Actor"]
+top_solid = true
+bottom_solid = true
+left_solid = true
+right_solid = true
+
+[node name="LazerDetector" type="LazerDetector" parent="."]
+
+[node name="BoxJustice32" type="Sprite2D" parent="."]
+position = Vector2(0.5, 0.5)
+scale = Vector2(0.036, 0.036)
+texture = ExtResource("1_kmx18")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_v8sc8")

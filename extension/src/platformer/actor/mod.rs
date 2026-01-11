@@ -7,9 +7,10 @@ mod player;
 mod cube;
 mod plate;
 mod door;
+mod detector;
 
 const SCENE_SCALE: f32 = 65536.0;
-const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
+pub const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
 
 const GRAVITY: i32 = 3000;
 
@@ -34,6 +35,10 @@ bitflags! {
 impl SurfaceProperties {
 	pub fn any(self) -> bool {
 		self != Self::empty()
+	}
+
+	pub fn opaque(self) -> bool {
+		self.contains(SurfaceProperties::SOLID)
 	}
 }
 
@@ -100,6 +105,7 @@ pub struct ActorData {
 	pub actor: Option<InstanceId>,
 	pub notify_target: Option<InstanceId>,
 	pub signal: bool,
+	pub beams: u32,
 	gravity: i32,
 	terminal_velocity: i32,
 	pub top: SurfaceProperties,
