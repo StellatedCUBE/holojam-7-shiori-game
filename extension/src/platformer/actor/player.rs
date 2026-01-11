@@ -1,6 +1,7 @@
 use std::{cell::Cell, rc::Rc};
 
 use godot::prelude::*;
+use godot::classes::Input;
 
 use super::{Actor, ActorData, Directions, GRAVITY};
 

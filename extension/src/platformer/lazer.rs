@@ -1,6 +1,6 @@
 use std::{cell::{Cell, RefCell}, f32::consts::PI, rc::Rc};
 
-use godot::{classes::{ISprite2D, Sprite2D}, prelude::*};
+use godot::{prelude::*};
 
 use super::actor::{self, Actor, ActorData};
 

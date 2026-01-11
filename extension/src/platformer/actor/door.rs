@@ -1,6 +1,6 @@
 use std::{cell::Cell, rc::Rc};
 
-use godot::{classes::AnimatedSprite2D, prelude::*};
+use godot::{classes::{AnimatedSprite2D}, prelude::*};
 
 use super::{Actor, ActorData, SurfaceProperties};
 

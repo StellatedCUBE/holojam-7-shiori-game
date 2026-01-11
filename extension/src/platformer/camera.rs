@@ -1,6 +1,6 @@
 use std::{cell::Cell, rc::Rc};
 
-use godot::{classes::DisplayServer, prelude::*};
+use godot::{classes::{DisplayServer, Camera2D, ICamera2D}, prelude::*};
 
 use super::actor::{Actor, ActorData, Vec};
 

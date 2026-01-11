@@ -6,4 +6,4 @@ reloadable = true
 [libraries]
 windows.x86_64 = "res://../extension/hj7.dll"
 linux.debug.x86_64 = "res://../extension/target/debug/libhj7.so"
-web.release.wasm32 = "res://../extension/target/wasm32-unknown-emscripten/release/libhj7.wasm"
+web.wasm32 = "res://../extension/target/wasm32-unknown-emscripten/debug/hj7.wasm"

@@ -10,6 +10,11 @@ crate-type = ["cdylib"]
 bitflags = "2.10.0"
 godot = "0.2.4"
 
+#[dependencies.godot]
+#git = "https://github.com/godot-rust/gdext"
+#branch = "master"
+#features = ["api-custom", "experimental-wasm", "lazy-function-tables", "experimental-wasm-nothreads"]
+
 [profile.release]
 opt-level = "z"
 panic = "abort"
