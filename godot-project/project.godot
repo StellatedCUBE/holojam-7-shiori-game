@@ -13,6 +13,21 @@ config_version=5
 config/name="ShioriGame"
 run/main_scene="uid://blddutvt4hlo6"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[aseprite]
+
+import/import_plugin/default_automatic_importer="SpriteFrames"
+animation/layers/only_include_visible_layers_by_default=true
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg")
 
 [input]
 
@@ -35,3 +50,6 @@ hold={
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=true
+textures/decals/filter=0
+textures/light_projectors/filter=0
