@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://ev3wanje6hwy"
-path="res://.godot/imported/terrain_platform_all9.aseprite-17d2bb7b9da19ded1f0061b9fa08eb9c.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/Terrains/terrain_platform_all9.aseprite"
-dest_files=["res://.godot/imported/terrain_platform_all9.aseprite-17d2bb7b9da19ded1f0061b9fa08eb9c.res"]
 
 [params]
 

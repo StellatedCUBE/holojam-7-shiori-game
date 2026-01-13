@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://c3vsjfm5f8ep5"
-path="res://.godot/imported/terrain_platform_horizontal_mid_center.aseprite-042428a78da759d16c2fa737e48da9b3.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/Terrains/terrain_platform_horizontal_mid_center.aseprite"
-dest_files=["res://.godot/imported/terrain_platform_horizontal_mid_center.aseprite-042428a78da759d16c2fa737e48da9b3.res"]
 
 [params]
 

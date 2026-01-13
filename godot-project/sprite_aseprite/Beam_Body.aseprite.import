@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://c38otbiofjaqq"
-path="res://.godot/imported/Beam_Body.aseprite-f61ac7a5f59e3074307e1068bdc788a7.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/Beam_Body.aseprite"
-dest_files=["res://.godot/imported/Beam_Body.aseprite-f61ac7a5f59e3074307e1068bdc788a7.res"]
 
 [params]
 

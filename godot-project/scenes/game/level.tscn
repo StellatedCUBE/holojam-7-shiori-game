@@ -152,3 +152,4 @@ position = Vector2(159, 43)
 position = Vector2(148, 47)
 
 [node name="Pause Menu" parent="." instance=ExtResource("10_p2ltr")]
+visible = false

@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://rajqpyd2a017"
-path="res://.godot/imported/advent_prison.aseprite-5f29bd02910c2b97a31cdf3a38db3f02.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/advent_prison.aseprite"
-dest_files=["res://.godot/imported/advent_prison.aseprite-5f29bd02910c2b97a31cdf3a38db3f02.res"]
 
 [params]
 

@@ -88,7 +88,9 @@ impl INode2D for Lazer {
 		self.input_actors = self.inputs.iter_shared().map(|input| Rc::clone(&input.bind().data)).collect();
 		self.beam = Some(Rc::from(RefCell::new(Beam {
 			active: self.input_actors.is_empty(),
-			start_direction: Direction::Left,
+			start_direction: match (self.base().get_rotation_degrees() as i32).rem_euclid(360) {
+				_ => Direction::Left,
+			},
 			start_pos: self.base().get_child(0).unwrap().try_cast::<Node2D>().unwrap().get_global_position().into(),
 			hit_actor: None,
 			scene: self.beam_type.take().unwrap(),
