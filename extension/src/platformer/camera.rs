@@ -36,8 +36,8 @@ impl ICamera2D for ScreenCamera {
 		let follow = self.actor.get();
 		let follow_point = follow.pos + follow.area_offset + follow.area_size.half();
 		let screen = Vec {
-			x: follow_point.x / screen_size.x,
-			y: follow_point.y / screen_size.y,
+			x: follow_point.x.div_euclid(screen_size.x),
+			y: follow_point.y.div_euclid(screen_size.y),
 		};
 		let center = Vec {
 			x: screen.x * screen_size.x,
