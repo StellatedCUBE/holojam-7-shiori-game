@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://blddutvt4hlo6"]
+[gd_scene load_steps=11 format=4 uid="uid://blddutvt4hlo6"]
 
 [ext_resource type="TileSet" uid="uid://owsk74g3yyr1" path="res://sprite_aseprite_output/terrain_platform_all9_tileset.res" id="1_khnyk"]
 [ext_resource type="AudioStream" uid="uid://llnnv0yd88lq" path="res://music/main.mp3" id="1_p2ltr"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cjcxid6bcjsrh" path="res://scenes/actors/door_horizontal.tscn" id="7_mxnjv"]
 [ext_resource type="PackedScene" uid="uid://cbr8kl416dlkn" path="res://scenes/actors/lazer.tscn" id="8_irnlk"]
 [ext_resource type="PackedScene" uid="uid://coyd58dwk8q6l" path="res://scenes/actors/lazer_detector.tscn" id="9_eyudv"]
+[ext_resource type="PackedScene" uid="uid://clyeno8kwueeh" path="res://menus/pause_menu.tscn" id="10_p2ltr"]
 
 [node name="Level" type="PlatformerGame" node_paths=PackedStringArray("tilemap", "beam_container")]
 tilemap = NodePath("TileMap")
@@ -33,7 +34,7 @@ tile_map_data = PackedByteArray("AAAAAAsAAAACAAEAAAAUAAAAAAABAAIAAAAFAAAAAAABAAI
 tile_set = ExtResource("1_khnyk")
 
 [node name="Player" parent="." instance=ExtResource("2_dtmi3")]
-position = Vector2(37, 4)
+position = Vector2(10, 15)
 
 [node name="DoorLevel1" parent="." node_paths=PackedStringArray("inputs") instance=ExtResource("4_65r54")]
 inputs = [NodePath("../PlateLevel1")]
@@ -95,26 +96,6 @@ position = Vector2(144, 15)
 inputs = [NodePath("../PlatePuzzleLevel3")]
 position = Vector2(151, 15)
 
-[node name="DoorTest" parent="." node_paths=PackedStringArray("inputs") instance=ExtResource("7_mxnjv")]
-inputs = [NodePath("../PlateTest")]
-position = Vector2(18, 10)
-
-[node name="PlateTest" parent="." instance=ExtResource("6_irnlk")]
-position = Vector2(18, 17)
-
-[node name="Door2Test" parent="." node_paths=PackedStringArray("inputs") instance=ExtResource("4_65r54")]
-inputs = [NodePath("../Plate2Test")]
-position = Vector2(3, 15)
-
-[node name="Plate2Test" parent="." instance=ExtResource("6_irnlk")]
-position = Vector2(5, 17)
-
-[node name="SmallCrateTest" parent="." instance=ExtResource("5_mxnjv")]
-position = Vector2(18, 15)
-
-[node name="SmallCrate2Test" parent="." instance=ExtResource("5_mxnjv")]
-position = Vector2(6, 15)
-
 [node name="LazerLaser1" parent="." instance=ExtResource("8_irnlk")]
 position = Vector2(94, 43)
 
@@ -169,3 +150,5 @@ position = Vector2(159, 43)
 
 [node name="SmallCrate3" parent="." instance=ExtResource("5_mxnjv")]
 position = Vector2(148, 47)
+
+[node name="Pause Menu" parent="." instance=ExtResource("10_p2ltr")]
