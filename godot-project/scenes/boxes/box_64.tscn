@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5lfyuwqf6xl"]
+
+[ext_resource type="SpriteFrames" uid="uid://2cwlew7x6sil" path="res://sprite_aseprite/Boxes/box_justice_64.aseprite" id="1_ixarv"]
+
+[node name="Box_64" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_ixarv")

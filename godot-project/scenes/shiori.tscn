@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://2ffquok7dss0"]
+
+[ext_resource type="SpriteFrames" uid="uid://bb4jcfo1edorc" path="res://sprite_aseprite_output/shiorinovella2.res" id="1_4jnni"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_scnsn"]
+size = Vector2(20, 56)
+
+[node name="Shiori" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(25, 50)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(0, -28)
+scale = Vector2(2.594882, 1)
+shape = SubResource("RectangleShape2D_scnsn")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D/CollisionShape2D"]
+position = Vector2(0, -4)
+scale = Vector2(0.38537398, 1)
+sprite_frames = ExtResource("1_4jnni")
+animation = &"Idle"
+metadata/_aseprite_wizard_interface_config_ = {
+"layer_section": true,
+"pending_changes": {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": true,
+"scale": "1.0",
+"should_round_fps": true,
+"slice": "",
+"source": "",
+"source_uid": -1
+}
+}
