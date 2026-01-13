@@ -36,6 +36,15 @@ impl Direction {
 			Self::Up => PI * 1.5,
 		}
 	}
+
+	pub const fn tile_offset(self) -> Vector2i {
+		match self {
+			Self::Up => Vector2i::UP,
+			Self::Left => Vector2i::LEFT,
+			Self::Down => Vector2i::DOWN,
+			Self::Right => Vector2i::RIGHT,
+		}
+	}
 }
 
 #[derive(Clone, Copy)]
@@ -89,6 +98,9 @@ impl INode2D for Lazer {
 		self.beam = Some(Rc::from(RefCell::new(Beam {
 			active: self.input_actors.is_empty(),
 			start_direction: match (self.base().get_rotation_degrees() as i32).rem_euclid(360) {
+				90 => Direction::Up,
+				180 => Direction::Right,
+				270 => Direction::Down,
 				_ => Direction::Left,
 			},
 			start_pos: self.base().get_child(0).unwrap().try_cast::<Node2D>().unwrap().get_global_position().into(),

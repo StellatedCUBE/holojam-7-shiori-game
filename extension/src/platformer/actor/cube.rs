@@ -3,7 +3,7 @@ use std::{cell::Cell, rc::Rc};
 use godot::prelude::*;
 use godot::classes::Input;
 
-use super::{player::Player, Actor, ActorData, Directions, SurfaceProperties};
+use super::{player::Player, Actor, ActorData, Directions, Reflection, SurfaceProperties};
 
 const GRAB_DISTANCE: i32 = 4096;
 
@@ -30,6 +30,10 @@ pub struct Crate {
 	push_speed: i32,
 	#[export]
 	carryable: bool,
+	#[export]
+	can_flip_reflection: bool,
+	#[export]
+	sprite: Option<Gd<Node2D>>,
 }
 
 #[godot_api]
@@ -42,6 +46,8 @@ impl INode for Crate {
 			hold: HoldStatus::None,
 			push_speed: 0,
 			carryable: false,
+			can_flip_reflection: false,
+			sprite: None,
 		}
 	}
 
@@ -62,6 +68,7 @@ impl INode for Crate {
 					HoldSide::Left => data.area_size.x / -2,
 					HoldSide::Right => carrier.area_size.x / 2,
 				} - data.area_offset.x, y: -data.area_offset.y };
+				data.vel = super::Vec::default();
 				if Input::singleton().is_action_just_pressed("hold") {
 					data.pos.x += (carrier.area_size.x / 2 - data.area_size.x) * match *side {
 						HoldSide::Left => -1,
@@ -75,12 +82,22 @@ impl INode for Crate {
 						y: carrier.vel.y,
 					};
 					self.hold = HoldStatus::CanHold(carrier_cell.clone(), *side);
-					data.top = SurfaceProperties::SOLID;
-					data.bottom = SurfaceProperties::SOLID;
-					data.left = SurfaceProperties::SOLID | SurfaceProperties::NOTIFY;
-					data.right = SurfaceProperties::SOLID | SurfaceProperties::NOTIFY;
+					data.top |= SurfaceProperties::SOLID;
+					data.bottom |= SurfaceProperties::SOLID;
+					data.left |= SurfaceProperties::SOLID | SurfaceProperties::NOTIFY;
+					data.right |= SurfaceProperties::SOLID | SurfaceProperties::NOTIFY;
 				} else if carrier.vel.x != 0 {
 					*side = if carrier.vel.x < 0 { HoldSide::Left } else { HoldSide::Right };
+				}
+				if self.can_flip_reflection && Input::singleton().is_action_just_pressed("flip") {
+					let mut scale = self.sprite.as_ref().unwrap().get_scale();
+					scale.y *= -1.0;
+					self.sprite.as_mut().unwrap().set_scale(scale);
+					data.reflection = match data.reflection {
+						Reflection::None => Reflection::None,
+						Reflection::Main => Reflection::Inverse,
+						Reflection::Inverse => Reflection::Main,
+					};
 				}
 				self.actor.set(data);
 				return;
@@ -95,10 +112,11 @@ impl INode for Crate {
 					self.hold = HoldStatus::None;
 				} else if Input::singleton().is_action_pressed("hold") {
 					self.hold = HoldStatus::Holding(by.clone(), *side);
-					data.top = SurfaceProperties::empty();
-					data.bottom = SurfaceProperties::empty();
-					data.left = SurfaceProperties::empty();
-					data.right = SurfaceProperties::empty();
+					data.top = SurfaceProperties::OPAQUE;
+					data.bottom = SurfaceProperties::OPAQUE;
+					data.left = SurfaceProperties::OPAQUE;
+					data.right = SurfaceProperties::OPAQUE;
+					data.vel.x = 1;
 				}
 			}
 			HoldStatus::None => {}

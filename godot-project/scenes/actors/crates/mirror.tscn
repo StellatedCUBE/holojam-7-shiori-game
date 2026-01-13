@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv6mupt0qh3n1"]
+
+[ext_resource type="Texture2D" uid="uid://bq4x4ndbjr2k3" path="res://sprite_aseprite_output/box_mirror_45_TopLeft_BottomRight_64.png" id="1_jibb2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dx21y"]
+size = Vector2(2, 2)
+
+[node name="MirrorCrate" type="Actor"]
+is_static = false
+terminal_velocity = 70000
+top_solid = true
+bottom_solid = true
+left_solid = true
+left_notify = true
+right_solid = true
+right_notify = true
+reflective = true
+
+[node name="Crate" type="Crate" parent="."]
+push_speed = 4000
+carryable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dx21y")
+
+[node name="BoxJustice32" type="Sprite2D" parent="."]
+scale = Vector2(0.03125, 0.03125)
+texture = ExtResource("1_jibb2")

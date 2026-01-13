@@ -6,10 +6,6 @@
 size = Vector2(1.2, 1.2)
 
 [node name="LazerDetector" type="Actor"]
-top_solid = true
-bottom_solid = true
-left_solid = true
-right_solid = true
 
 [node name="LazerDetector" type="LazerDetector" parent="."]
 

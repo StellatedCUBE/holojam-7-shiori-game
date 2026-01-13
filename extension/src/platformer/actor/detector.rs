@@ -2,7 +2,7 @@ use std::{cell::Cell, rc::Rc};
 
 use godot::{classes::AnimatedSprite2D, prelude::*};
 
-use super::{Actor, ActorData};
+use super::{Actor, ActorData, SurfaceProperties};
 
 const CHARGE_MAX: u32 = 32;
 
@@ -27,7 +27,10 @@ impl INode for LazerDetector {
 	fn ready(&mut self) {
 		self.actor = Rc::clone(&self.base().get_parent().unwrap().try_cast::<Actor>().unwrap().bind().data);
 		let mut data = self.actor.get();
-		data.notify_target = Some(self.base().instance_id());
+		data.top |= SurfaceProperties::OPAQUE;
+		data.left |= SurfaceProperties::OPAQUE;
+		data.bottom |= SurfaceProperties::OPAQUE;
+		data.right |= SurfaceProperties::OPAQUE;
 		self.actor.set(data);
 	}
 
