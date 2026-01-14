@@ -8,6 +8,7 @@ mod cube;
 mod plate;
 mod door;
 mod detector;
+mod unlock_book_zone;
 
 const SCENE_SCALE: f32 = 65536.0;
 pub const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
@@ -29,6 +30,7 @@ bitflags! {
 	pub struct SurfaceProperties: u8 {
 		const SOLID = 1;
 		const NOTIFY = 2;
+		const OPAQUE = 4;
 	}
 }
 
@@ -38,11 +40,11 @@ impl SurfaceProperties {
 	}
 
 	pub fn opaque(self) -> bool {
-		self.contains(SurfaceProperties::SOLID)
+		self.contains(SurfaceProperties::OPAQUE)
 	}
 }
 
-#[derive(Default, Clone, Copy)]
+#[derive(Default, Clone, Copy, PartialEq, Eq)]
 pub struct Vec {
 	pub x: i32,
 	pub y: i32,
@@ -92,6 +94,14 @@ pub struct Edge {
 	pub properties: SurfaceProperties
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Default)]
+pub enum Reflection {
+	#[default]
+	None,
+	Main,
+	Inverse,
+}
+
 #[derive(Default, Clone, Copy)]
 pub struct ActorData {
 	pub moves: bool,
@@ -106,6 +116,7 @@ pub struct ActorData {
 	pub notify_target: Option<InstanceId>,
 	pub signal: bool,
 	pub beams: u32,
+	pub reflection: Reflection,
 	gravity: i32,
 	terminal_velocity: i32,
 	pub top: SurfaceProperties,
@@ -139,6 +150,10 @@ pub struct Actor {
 	right_solid: bool,
 	#[export]
 	right_notify: bool,
+	#[export]
+	reflective: bool,
+	#[export]
+	invert_reflection_direction: bool,
 
 	base: Base<Node2D>,
 }
@@ -158,6 +173,8 @@ impl INode2D for Actor {
 			bottom_notify: false,
 			right_solid: false,
 			right_notify: false,
+			reflective: false,
+			invert_reflection_direction: false,
 			base,
 		}
 	}
@@ -168,13 +185,20 @@ impl INode2D for Actor {
 		data.moves = !self.is_static;
 		data.pos = self.base().get_global_position().into();
 		data.actor = Some(self.base().instance_id());
-		if self.top_solid { data.top |= SurfaceProperties::SOLID; }
+		data.reflection = if !self.reflective {
+			Reflection::None
+		} else if self.invert_reflection_direction {
+			Reflection::Inverse
+		} else {
+			Reflection::Main
+		};
+		if self.top_solid { data.top |= SurfaceProperties::SOLID | SurfaceProperties::OPAQUE; }
 		if self.top_notify { data.top |= SurfaceProperties::NOTIFY; }
-		if self.left_solid { data.left |= SurfaceProperties::SOLID; }
+		if self.left_solid { data.left |= SurfaceProperties::SOLID | SurfaceProperties::OPAQUE; }
 		if self.left_notify { data.left |= SurfaceProperties::NOTIFY; }
-		if self.bottom_solid { data.bottom |= SurfaceProperties::SOLID; }
+		if self.bottom_solid { data.bottom |= SurfaceProperties::SOLID | SurfaceProperties::OPAQUE; }
 		if self.bottom_notify { data.bottom |= SurfaceProperties::NOTIFY; }
-		if self.right_solid { data.right |= SurfaceProperties::SOLID; }
+		if self.right_solid { data.right |= SurfaceProperties::SOLID | SurfaceProperties::OPAQUE; }
 		if self.right_notify { data.right |= SurfaceProperties::NOTIFY; }
 
 		if self.terminal_velocity > 0 {

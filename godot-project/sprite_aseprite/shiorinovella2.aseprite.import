@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://fi5uwah8blyo"
-path="res://.godot/imported/shiorinovella2.aseprite-2a990889c38c176d8d4167dc64d66c0b.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/shiorinovella2.aseprite"
-dest_files=["res://.godot/imported/shiorinovella2.aseprite-2a990889c38c176d8d4167dc64d66c0b.res"]
 
 [params]
 

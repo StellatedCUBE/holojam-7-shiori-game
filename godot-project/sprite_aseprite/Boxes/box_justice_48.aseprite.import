@@ -3,12 +3,11 @@
 importer="aseprite_wizard.plugin.spriteframes"
 type="SpriteFrames"
 uid="uid://cwmrmax87c5kc"
-path="res://.godot/imported/box_justice_48.aseprite-5f65fc53aaafd3e2e6e8aae78c143d9e.res"
+valid=false
 
 [deps]
 
 source_file="res://sprite_aseprite/Boxes/box_justice_48.aseprite"
-dest_files=["res://.godot/imported/box_justice_48.aseprite-5f65fc53aaafd3e2e6e8aae78c143d9e.res"]
 
 [params]
 

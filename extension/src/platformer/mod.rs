@@ -1,6 +1,6 @@
 use std::{cell::{Cell, RefCell}, i32, rc::Rc};
 
-use actor::{Actor, ActorData, Directions, SurfaceProperties, SCENE_SCALE_INV};
+use actor::{Actor, ActorData, Directions, Reflection, SurfaceProperties, SCENE_SCALE_INV};
 use godot::{classes::TileMapLayer, prelude::*};
 use lazer::{Beam, Direction, Lazer, SegmentData};
 
@@ -294,7 +294,7 @@ impl INode2D for PlatformerGame {
 			let mut beam = beam.borrow_mut();
 			if beam.active == beam.segments.is_empty() || (beam.active && self.actors_that_move.iter().any(|actor| {
 				let data = actor.get();
-				(data.vel.x != 0 || data.vel.y != 0) && {
+				(data.vel.x != 0 || data.vel.y != 0) /*&& {
 					let pmin = data.pos + actor::Vec {
 						x: data.vel.x.min(0) - data.vel.x,
 						y: data.vel.y.min(0) - data.vel.y
@@ -306,7 +306,7 @@ impl INode2D for PlatformerGame {
 					let tl = pmin + data.area_offset;
 					let br = pmax + data.area_offset + data.area_size;
 					br.x >= beam.left && br.y >= beam.top && tl.x <= beam.right && tl.y <= beam.bottom
-				}
+				}*/
 			})) {
 				if let Some(actor) = beam.hit_actor.take() {
 					let mut data = actor.get();
@@ -356,9 +356,59 @@ impl INode2D for PlatformerGame {
 							}
 						}
 
-						segment.end = true;
+						let tile = self.tile_pos(segment.start);
+						let mut tile = Vector2i { x: tile.x, y: tile.y };
+						let tile_dir = segment.direction.tile_offset();
+						let mut i = 0;
+						while i <= segment.length >> 16 {
+							if self.tilemap.as_ref().unwrap().get_cell_tile_data(tile).is_some_and(|t| t.get_custom_data("Solid").booleanize()) {
+								segment.length = i << 16;
+								hit = None;
+								break;
+							}
+							i += 1;
+							tile += tile_dir;
+						}
+
+
+						segment.end = hit.as_ref().is_none_or(|a| a.get().reflection == Reflection::None);
+
+						if !segment.end {
+							let hit = hit.as_ref().unwrap().get();
+							let inverse = hit.reflection == Reflection::Inverse;
+							let (offset, size) = match segment.direction {
+								Direction::Up | Direction::Down => (segment.start.x - hit.pos.x - hit.area_offset.x, hit.area_size.x),
+								Direction::Left | Direction::Right => (segment.start.y - hit.pos.y - hit.area_offset.y, hit.area_size.y),
+							};
+							segment.length += match (segment.direction, inverse) {
+								(Direction::Up, true) |
+								(Direction::Down, false) |
+								(Direction::Left, true) |
+								(Direction::Right, false) => offset,
+								_ => size - offset,
+							};
+						}
 
 						segments.push(segment);
+						
+						if !segment.end {
+							let hit = hit.as_ref().unwrap().get();
+							let inverse = hit.reflection == Reflection::Inverse;
+							let offset = tile_dir * segment.length;
+							segment = SegmentData {
+								start: segment.start + actor::Vec {
+									x: offset.x,
+									y: offset.y
+								},
+								direction: if inverse {
+									segment.direction.reflect_inv()
+								} else {
+									segment.direction.reflect_main()
+								},
+								length: i32::MAX,
+								end: false,
+							};
+						}
 					}
 
 					if let Some(hit) = hit {
