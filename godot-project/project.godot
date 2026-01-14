@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ShioriGame"
-run/main_scene="uid://diqo2tphxg6nk"
+run/main_scene="uid://blddutvt4hlo6"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -27,7 +27,7 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 
