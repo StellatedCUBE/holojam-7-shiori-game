@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=4 uid="uid://blddutvt4hlo6"]
+[gd_scene load_steps=12 format=4 uid="uid://blddutvt4hlo6"]
 
 [ext_resource type="TileSet" uid="uid://owsk74g3yyr1" path="res://sprite_aseprite_output/terrain_platform_all9_tileset.res" id="1_khnyk"]
 [ext_resource type="AudioStream" uid="uid://llnnv0yd88lq" path="res://music/main.mp3" id="1_p2ltr"]
+[ext_resource type="PackedScene" uid="uid://cpxe3nll067ir" path="res://scenes/actors/book.tscn" id="2_a2g3c"]
 [ext_resource type="PackedScene" uid="uid://bhlqs85kqg2d4" path="res://scenes/actors/player.tscn" id="2_dtmi3"]
 [ext_resource type="PackedScene" uid="uid://ccan1co84mr63" path="res://scenes/actors/door.tscn" id="4_65r54"]
 [ext_resource type="PackedScene" uid="uid://yj1kmdc1ee2s" path="res://scenes/actors/crates/small.tscn" id="5_mxnjv"]
@@ -14,6 +15,9 @@
 [node name="Level" type="PlatformerGame" node_paths=PackedStringArray("tilemap", "beam_container")]
 tilemap = NodePath("TileMap")
 beam_container = NodePath("Beams")
+
+[node name="Book" parent="." instance=ExtResource("2_a2g3c")]
+position = Vector2(-22, -16)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_p2ltr")

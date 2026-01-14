@@ -2,13 +2,14 @@ use std::{cell::Cell, rc::Rc};
 
 use godot::{classes::{DisplayServer, Camera2D, ICamera2D}, prelude::*};
 
-use super::actor::{Actor, ActorData, Vec};
+use super::actor::{self, Actor, ActorData};
 
 #[derive(GodotClass)]
 #[class(base=Camera2D)]
 pub struct ScreenCamera {
 	base: Base<Camera2D>,
 	actor: Rc<Cell<ActorData>>,
+	previous_center: actor::Vec,
 
 	#[export]
 	follow: Option<Gd<Actor>>,
@@ -17,11 +18,18 @@ pub struct ScreenCamera {
 }
 
 #[godot_api]
+impl ScreenCamera {
+	#[signal]
+	fn change_screen();
+}
+
+#[godot_api]
 impl ICamera2D for ScreenCamera {
 	fn init(base: Base<Camera2D>) -> Self {
 		Self {
 			base,
 			actor: Default::default(),
+			previous_center: Default::default(),
 			follow: None,
 			screen_size: Vector2i { x: 21, y: 12 },
 		}
@@ -32,17 +40,23 @@ impl ICamera2D for ScreenCamera {
 	}
 
 	fn process(&mut self, _: f64) {
-		let screen_size : Vec = self.screen_size.cast_float().into();
+		let screen_size : actor::Vec = self.screen_size.cast_float().into();
 		let follow = self.actor.get();
 		let follow_point = follow.pos + follow.area_offset + follow.area_size.half();
-		let screen = Vec {
+		let screen = actor::Vec {
 			x: follow_point.x.div_euclid(screen_size.x),
 			y: follow_point.y.div_euclid(screen_size.y),
 		};
-		let center = Vec {
+		let center = actor::Vec {
 			x: screen.x * screen_size.x,
 			y: screen.y * screen_size.y
 		} + screen_size.half();
+		/*if center != self.previous_center {
+			self.previous_center = center;
+			if self.base().get_zoom().x != 1000.0 {
+				self.signals().change_screen().emit();
+			}
+		}*/
 		let center: Vector2 = center.into();
 		let position = self.base().get_position();
 		let speed = if center.distance_squared_to(position) < 0.0002 || self.base().get_zoom().x == 1000.0 { 1.0 } else { 0.1 };

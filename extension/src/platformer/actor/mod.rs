@@ -8,6 +8,7 @@ mod cube;
 mod plate;
 mod door;
 mod detector;
+mod unlock_book_zone;
 
 const SCENE_SCALE: f32 = 65536.0;
 pub const SCENE_SCALE_INV: f32 = 1.0 / SCENE_SCALE;
@@ -43,7 +44,7 @@ impl SurfaceProperties {
 	}
 }
 
-#[derive(Default, Clone, Copy)]
+#[derive(Default, Clone, Copy, PartialEq, Eq)]
 pub struct Vec {
 	pub x: i32,
 	pub y: i32,

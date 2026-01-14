@@ -13,6 +13,7 @@ terminal_velocity = 50000
 speed = 10000
 jump_power = 30000
 jump_gravity_cutoff = 5000
+book_bounce = 18000
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)

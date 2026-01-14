@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpdg4a1mo0wsm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lew57"]
+size = Vector2(10, 10)
+
+[node name="UnlockBookTrigger" type="Actor"]
+top_notify = true
+bottom_notify = true
+left_notify = true
+right_notify = true
+
+[node name="UnlockBookTrigger" type="UnlockBookTrigger" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lew57")
