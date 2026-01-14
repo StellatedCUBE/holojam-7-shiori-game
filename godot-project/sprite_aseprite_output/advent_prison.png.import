@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbg0e86vk386i"
-path="res://.godot/imported/shiorinovella2.png-455579d9e07740eb1657c00acd7bccea.ctex"
+uid="uid://dqvjordokaita"
+path="res://.godot/imported/advent_prison.png-f7c11545777d3e77b8931259081b4a08.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprite_aseprite_output/shiorinovella2.png"
-dest_files=["res://.godot/imported/shiorinovella2.png-455579d9e07740eb1657c00acd7bccea.ctex"]
+source_file="res://sprite_aseprite_output/advent_prison.png"
+dest_files=["res://.godot/imported/advent_prison.png-f7c11545777d3e77b8931259081b4a08.ctex"]
 
 [params]
 
