@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ShioriGame"
-run/main_scene="uid://blddutvt4hlo6"
+run/main_scene="uid://diqo2tphxg6nk"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 

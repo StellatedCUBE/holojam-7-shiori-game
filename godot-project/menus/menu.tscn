@@ -34,15 +34,9 @@ layout_mode = 2
 focus_neighbor_top = NodePath("../QuitButton")
 text = "Start"
 
-[node name="ExtrasButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Extras (currently not functional)
-"
-
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ExtrasButton" to="." method="_on_extras_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
