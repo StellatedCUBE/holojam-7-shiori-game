@@ -22,6 +22,7 @@ bitflags! {
 		const DOWN = 2;
 		const LEFT = 4;
 		const RIGHT = 8;
+		const TILE_DOWN = 16;
 	}
 }
 

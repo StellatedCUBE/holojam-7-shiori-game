@@ -196,7 +196,7 @@ impl INode2D for PlatformerGame {
 							if let Some(tiledata) = tm.get_cell_tile_data(Vector2i { x, y }) {
 								if tiledata.get_custom_data("Solid").booleanize() {
 									data.next_vel = self.un_tile_pos(y) - (data.pos.y + data.area_offset.y + data.area_size.y);
-									data.collided |= Directions::DOWN;
+									data.collided |= Directions::DOWN | Directions::TILE_DOWN;
 									break 'o;
 								}
 							}
@@ -371,7 +371,7 @@ impl INode2D for PlatformerGame {
 						}
 
 
-						segment.end = hit.as_ref().is_none_or(|a| a.get().reflection == Reflection::None);
+						segment.end = hit.as_ref().is_none_or(|a| a.get().reflection == Reflection::None) && segments.len() < 16;
 
 						if !segment.end {
 							let hit = hit.as_ref().unwrap().get();

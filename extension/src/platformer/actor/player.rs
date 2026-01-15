@@ -1,6 +1,6 @@
 use std::{cell::Cell, rc::Rc, sync::atomic::AtomicBool};
 
-use godot::prelude::*;
+use godot::{classes::AnimatedSprite2D, prelude::*};
 use godot::classes::Input;
 
 use super::{Actor, ActorData, Directions, GRAVITY};
@@ -13,6 +13,7 @@ pub struct Player {
 	base: Base<Node>,
 	actor: Rc<Cell<ActorData>>,
 	book: Rc<Cell<ActorData>>,
+	can_book: bool,
 
 	#[export]
 	speed: i32,
@@ -24,6 +25,8 @@ pub struct Player {
 	jump_gravity_cutoff: i32,
 	#[export]
 	book_bounce: i32,
+	#[export]
+	sprite: Option<Gd<AnimatedSprite2D>>,
 }
 
 #[godot_api]
@@ -33,11 +36,13 @@ impl INode for Player {
 			base,
 			actor: Default::default(),
 			book: Default::default(),
+			can_book: true,
 			speed: 16000,
 			jump_power: 50000,
 			jump_gravity: 1500,
 			jump_gravity_cutoff: 10000,
 			book_bounce: 0,
+			sprite: None,
 		}
 	}
 
@@ -51,8 +56,8 @@ impl INode for Player {
 		let mut data = self.actor.get();
 
 		data.vel.x = 0;
-		if input.is_action_pressed("ui_left") { data.vel.x -= self.speed; }
-		if input.is_action_pressed("ui_right") { data.vel.x += self.speed; }
+		if input.is_action_pressed("ui_left") { data.vel.x -= self.speed; self.sprite.as_mut().unwrap().set_scale(Vector2 { x: -0.0625, y: 0.0625 });}
+		if input.is_action_pressed("ui_right") { data.vel.x += self.speed; self.sprite.as_mut().unwrap().set_scale(Vector2 { x: 0.0625, y: 0.0625 }); }
 
 		if data.gravity == self.jump_gravity && (
 			data.vel.y > self.jump_gravity_cutoff ||
@@ -66,7 +71,7 @@ impl INode for Player {
 			if data.collided.contains(Directions::DOWN) {
 				data.vel.y -= self.jump_power;
 				data.gravity = self.jump_gravity;
-			} else if HAS_BOOK.load(std::sync::atomic::Ordering::Relaxed) {
+			} else if self.can_book && HAS_BOOK.load(std::sync::atomic::Ordering::Relaxed) {
 				let mut book = self.book.get();
 				book.pos = data.pos + data.area_offset + super::Vec {
 					x: data.area_size.x / 2,
@@ -74,7 +79,12 @@ impl INode for Player {
 				};
 				self.book.set(book);
 				data.vel.y = -self.book_bounce;
+				self.can_book = false;
 			}
+		}
+
+		if data.collided.contains(Directions::TILE_DOWN) {
+			self.can_book = true;
 		}
 
 		//godot_print!("{}", Into::<Vector2>::into(data.pos));

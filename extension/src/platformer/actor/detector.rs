@@ -1,6 +1,6 @@
 use std::{cell::Cell, rc::Rc};
 
-use godot::{classes::AnimatedSprite2D, prelude::*};
+use godot::{classes::{AnimatedSprite2D, Sprite2D}, prelude::*};
 
 use super::{Actor, ActorData, SurfaceProperties};
 
@@ -12,6 +12,9 @@ pub struct LazerDetector {
 	base: Base<Node>,
 	actor: Rc<Cell<ActorData>>,
 	charge: u32,
+
+	#[export]
+	fx: Option<Gd<Sprite2D>>,
 }
 
 #[godot_api]
@@ -21,6 +24,7 @@ impl INode for LazerDetector {
 			base,
 			actor: Default::default(),
 			charge: 0,
+			fx: None,
 		}
 	}
 
@@ -47,5 +51,6 @@ impl INode for LazerDetector {
 			data.signal = true;
 		}
 		self.actor.set(data);
+		self.fx.as_mut().unwrap().set_modulate(Color { r: 1.0, g: 1.0, b: 1.0, a: self.charge as f32 / CHARGE_MAX as f32 });
 	}
 }
